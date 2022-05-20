@@ -20,16 +20,17 @@ namespace FittersService.Models
                     adp.Fill(dt);
                     foreach (DataRow dr in dt.Rows)
                     {
-                        list.Add(new Fitter { ID = Convert.ToInt32(dr[0]), FullName = Convert.ToString(dr[1]), PhoneNumber = Convert.ToString(dr[2]), FitterType = Convert.ToInt32(dr[3]), UnderFitters = GetSubordinateFitters(Convert.ToInt32(dr[0])) });
+                        list.Add(new Fitter { ID = Convert.ToInt32(dr[0]), FullName = Convert.ToString(dr[1]), PhoneNumber = Convert.ToString(dr[2]), FitterType = Convert.ToInt32(dr[3]), UnderFitters = GetUnderFitters(Convert.ToInt32(dr[0])) });
                     }
                 }
             }
             return list;
         }
 
-        public bool Add(Fitter obj)
+        public int Add(Fitter obj)
         {
-            string query = "insert into Fitters values('" + obj.FullName + "','" + obj.PhoneNumber + "','" + obj.FitterType + "')";
+            string query = "insert into Fitters values('" + obj.FullName + "','" + obj.PhoneNumber + "','" + obj.FitterType + "'); "
+            + "SELECT CAST(scope_identity() AS int)";
             using (SqlConnection con = new SqlConnection(conn))
             {
                 using (SqlCommand cmd = new SqlCommand(query))
@@ -37,14 +38,14 @@ namespace FittersService.Models
                     cmd.Connection = con;
                     if (con.State == ConnectionState.Closed)
                         con.Open();
-                    int i = cmd.ExecuteNonQuery();
+                    int i = (Int32)cmd.ExecuteScalar();
                     if (i >= 1)
                     {
-                        return true;
+                        return i;
                     }
                     else
                     {
-                        return false;
+                        return 0;
                     }
                 }
             }
@@ -75,7 +76,38 @@ namespace FittersService.Models
 
         public bool DeleteFitter(int id)
         {
-            string query = "delete Fitters where Id='" + id + "'";
+            //Delete relations first
+            if (DeleteFitterRelations(id))
+            {
+                string query = "delete Fitters where Id='" + id + "'";
+                using (SqlConnection con = new SqlConnection(conn))
+                {
+                    using (SqlCommand cmd = new SqlCommand(query))
+                    {
+                        cmd.Connection = con;
+                        if (con.State == ConnectionState.Closed)
+                            con.Open();
+                        int i = cmd.ExecuteNonQuery();
+                        if (i >= 1)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public bool AddUnderFitter(int overfitterID, int underfitterID)
+        {
+            string query = "insert into FittersRelations values('" + overfitterID + "','" + underfitterID + "')";
             using (SqlConnection con = new SqlConnection(conn))
             {
                 using (SqlCommand cmd = new SqlCommand(query))
@@ -96,7 +128,53 @@ namespace FittersService.Models
             }
         }
 
-        public List<Fitter> GetSubordinateFitters(int overfitterID)
+        public bool DeleteFitterRelations(int id)
+        {
+            string query = "delete from FittersRelations where OverFitterID = " + id + " or UnderFitterId = " + id;
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    if (con.State == ConnectionState.Closed)
+                        con.Open();
+                    int i = cmd.ExecuteNonQuery();
+                    if (i >= 1)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        public bool DeleteUnderFitter(int underfitterID, int overfitterID)
+        {
+            string query = "delete from FittersRelations where OverFitterID = " + overfitterID + " and UnderFitterId = " + underfitterID;
+            using (SqlConnection con = new SqlConnection(conn))
+            {
+                using (SqlCommand cmd = new SqlCommand(query))
+                {
+                    cmd.Connection = con;
+                    if (con.State == ConnectionState.Closed)
+                        con.Open();
+                    int i = cmd.ExecuteNonQuery();
+                    if (i >= 1)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        public List<Fitter> GetUnderFitters(int overfitterID)
         {
             List<Fitter> list = new List<Fitter>();
             string query = "SELECT f.ID, f.FullName, f.PhoneNumber, f.FitterTypeID " +

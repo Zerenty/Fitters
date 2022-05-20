@@ -15,8 +15,16 @@ build_property.GenerateRazorMetadataSourceChecksumAttributes =
 build_property.MSBuildProjectDirectory = C:\Users\Jonas\source\repos\Fitters\Fitters
 build_property._RazorSourceGeneratorDebug = 
 
+[C:/Users/Jonas/source/repos/Fitters/Fitters/Views/Fitter/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRml0dGVyXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
 [C:/Users/Jonas/source/repos/Fitters/Fitters/Views/Fitter/Details.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRml0dGVyXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Jonas/source/repos/Fitters/Fitters/Views/Fitter/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcRml0dGVyXEVkaXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
 [C:/Users/Jonas/source/repos/Fitters/Fitters/Views/Fitter/Index.cshtml]
