@@ -5,7 +5,8 @@ namespace FittersService.Models
 {
     public class DbContext
     {
-        string conn = "Server=tcp:jvo-sql-db-server.database.windows.net,1433;Initial Catalog=jvo-sql-db;Persist Security Info=False;User ID=jonas;Password=***;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+        //Remember to insert password manually
+        string conn = "Server=tcp:jvo-sql-db-server.database.windows.net,1433;Initial Catalog=jvo-sql-db;Persist Security Info=False;User ID=jonas;Password=!Password123;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
         public List<Fitter> GetFitters()
         {
             List<Fitter> list = new List<Fitter>();
